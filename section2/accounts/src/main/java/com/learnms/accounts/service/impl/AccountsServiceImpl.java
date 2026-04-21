@@ -1,10 +1,13 @@
 package com.learnms.accounts.service.impl;
 
 import com.learnms.accounts.constants.AccountsConstants;
+import com.learnms.accounts.dto.AccountsDto;
 import com.learnms.accounts.dto.CustomerDto;
 import com.learnms.accounts.entity.Accounts;
 import com.learnms.accounts.entity.Customer;
 import com.learnms.accounts.exception.CustomerAlreadyExistsException;
+import com.learnms.accounts.exception.ResourceNotFoundException;
+import com.learnms.accounts.mapper.AccountsMapper;
 import com.learnms.accounts.mapper.CustomerMapper;
 import com.learnms.accounts.repository.AccountsRepository;
 import com.learnms.accounts.repository.CustomerRepository;
@@ -42,6 +45,8 @@ public class AccountsServiceImpl implements IAccountsService {
 
     }
 
+
+
     /**
      *
      * @param customer - Customer Object
@@ -53,7 +58,6 @@ public class AccountsServiceImpl implements IAccountsService {
 
         long randomAccNumber = 1000000000L + new Random().nextInt(900000000);
         newAccount.setAccountNumber(randomAccNumber);
-        System.out.println("random account no is :-                                    ,       " + newAccount.getAccountNumber());
         newAccount.setAccountType(AccountsConstants.SAVINGS);
         newAccount.setBranchAddress(AccountsConstants.ADDRESS);
 
@@ -63,11 +67,71 @@ public class AccountsServiceImpl implements IAccountsService {
     }
 
 
+    /**
+     * @param mobileNumber - Input Mobile Number
+     * @return Account Details based on a given MmbileNumber
+     */
+    @Override
+    public CustomerDto fetchAccount(String mobileNumber) {
 
+        Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber)
+        );
 
+        Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId()).orElseThrow(
+                () -> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString())
+        );
 
+        CustomerDto customerDto = CustomerMapper.mapToCustomerDto(customer, new CustomerDto());
+        customerDto.setAccountsDto(AccountsMapper.mapToAccountsDto(accounts, new AccountsDto()));
 
+        return customerDto;
+    }
 
+    /**
+     *
+     * @param customerDto - CustomerDto Object
+     * @return boolean indicating if the update of Account details is successful or not
+     */
+    @Override
+    public boolean updateAccount(CustomerDto customerDto) {
+
+        boolean isUpdated = false;
+        AccountsDto accountsDto = customerDto.getAccountsDto();
+        if(accountsDto != null) {
+            Accounts accounts = accountsRepository.findById(accountsDto.getAccountNumber()).orElseThrow(
+                    () -> new ResourceNotFoundException("Account", "AccountNumber", accountsDto.getAccountNumber().toString())
+            );
+            AccountsMapper.mapToAccounts(accountsDto, accounts);
+            accounts = accountsRepository.save(accounts);
+
+            Long customerId = accounts.getCustomerId();
+            Customer customer = customerRepository.findById(customerId).orElseThrow(
+                    () -> new ResourceNotFoundException("Customer", "CustomerID", customerId.toString())
+            );
+            CustomerMapper.mapToCustomer(customerDto, customer);
+            customerRepository.save(customer);
+            isUpdated = true;
+        }
+        return isUpdated;
+    }
+
+    /**
+     *
+     * @param mobileNumber - Input Mobile Number
+     * @return boolean indicating if the delete of Account details is successful or not
+     */
+    @Override
+    public boolean deleteAccount(String mobileNumber) {
+        Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber)
+        );
+
+        accountsRepository.deleteByCustomerId(customer.getCustomerId()); // this method is written by us
+        customerRepository.deleteById(customer.getCustomerId()); // this method is given by framework and not us
+
+        return true;
+    }
 
 
 
