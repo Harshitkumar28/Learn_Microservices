@@ -12,6 +12,17 @@ import java.time.LocalDateTime;
 @ControllerAdvice // in case of any controller exception, please invoke a method  in this class
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(Exception.class) // it will only invoke if below exceptions will not match exactly, means in default case
+    public ResponseEntity<ErrorResponseDto> handleGlobalException(Exception exception, WebRequest webRequest) {
+        ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
+                webRequest.getDescription(false),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponseDTO,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponseDto> handleResourceNotFoundException(ResourceNotFoundException exception, WebRequest webRequest) {
         ErrorResponseDto errorResponseDTO = new ErrorResponseDto(
