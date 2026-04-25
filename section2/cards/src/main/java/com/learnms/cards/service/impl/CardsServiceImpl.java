@@ -1,8 +1,11 @@
 package com.learnms.cards.service.impl;
 
 import com.learnms.cards.constants.CardsConstants;
+import com.learnms.cards.dto.CardsDto;
 import com.learnms.cards.entity.Cards;
 import com.learnms.cards.exception.CardAlreadyExistsException;
+import com.learnms.cards.exception.ResourceNotFoundException;
+import com.learnms.cards.mapper.CardsMapper;
 import com.learnms.cards.repository.CardsRepository;
 import com.learnms.cards.service.ICardsService;
 import lombok.AllArgsConstructor;
@@ -56,5 +59,57 @@ public class CardsServiceImpl implements ICardsService {
         return card;
     }
 
+    /**
+     *
+     * @param mobileNumber - Mobile Number of the Customer
+     * @return Card Details based on a given mobileNumber
+     */
+    @Override
+    public CardsDto fetchCard(String mobileNumber) {
+
+        Cards cards = cardsRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Card", "MobileNumber", mobileNumber)
+        );
+
+        return CardsMapper.mapToCardsDto(cards, new CardsDto());
+    }
+
+    /**
+     *
+     * @param cardsDto - CardsDto Object
+     * @return boolean indicating if the update of card details is successful or not
+     */
+    @Override
+    public boolean updateCard(CardsDto cardsDto) {
+
+        Cards cards = cardsRepository.findByCardNumber(cardsDto.getCardNumber()).orElseThrow(
+                () -> new ResourceNotFoundException("Card", "CardNumber", cardsDto.getCardNumber()) // it is a lambda expression for lazily execution
+        );
+
+        CardsMapper.mapToCards(cardsDto, cards);
+
+        cards.setUpdatedAt(LocalDateTime.now());
+        cards.setUpdatedBy("Harshit");
+
+        cardsRepository.save(cards);
+
+        return true;
+    }
+
+    /**
+     *
+     * @param mobileNumber - Input Mobile Number
+     * @return boolean indicating if the delete of card details is successful or not
+     */
+    @Override
+    public boolean deleteCard(String mobileNumber) {
+
+        Cards cards = cardsRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Card", "mobileNumber", mobileNumber)
+        );
+
+        cardsRepository.deleteById(cards.getCardId());
+        return true;
+    }
 
 }

@@ -19,11 +19,11 @@ import java.time.LocalDateTime;
 @Getter @Setter @ToString
 public class BaseEntity {
 
-    @CreatedDate
+//    @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @CreatedBy
+//    @CreatedBy
     @Column(updatable = false)
     private String createdBy;
 
