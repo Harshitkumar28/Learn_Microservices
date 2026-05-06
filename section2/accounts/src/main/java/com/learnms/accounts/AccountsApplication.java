@@ -28,7 +28,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 				version = "v1",
 				contact = @Contact(
 						name = "Harshit Kumar",
-						email = "abc@email.com",
+						email = "harshitmail@bloodbank.com",
 						url = "https://www.harsitwebsite.com"
 				),
 				license = @License(
