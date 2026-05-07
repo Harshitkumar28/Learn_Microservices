@@ -11,7 +11,6 @@ import com.learnms.loans.repository.LoansRepository;
 import com.learnms.loans.service.ILoansService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -53,10 +52,6 @@ public class LoansServiceImpl implements ILoansService {
         newLoan.setAmountPaid(0);
         newLoan.setOutstandingAmount(LoansConstants.NEW_LOAN_LIMIT);
 
-        //
-        newLoan.setCreatedAt(LocalDateTime.now());
-        newLoan.setCreatedBy("Anonymous");
-
         return newLoan;
 
     }
@@ -87,9 +82,6 @@ public class LoansServiceImpl implements ILoansService {
         );
 
         LoansMapper.mapToLoans(loansDto, loans);
-        loans.setUpdatedAt(LocalDateTime.now());
-        loans.setUpdatedBy("anonymous");
-
         loansRepository.save(loans);
 
         return true;
