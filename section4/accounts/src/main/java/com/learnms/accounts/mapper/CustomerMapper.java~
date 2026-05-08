@@ -1,0 +1,4 @@
+package com.learnms.accounts.mapper;
+
+public class CustomerMapper {
+}
