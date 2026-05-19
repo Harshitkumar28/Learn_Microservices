@@ -1,6 +1,7 @@
 package com.learnms.accounts.controller;
 
 import com.learnms.accounts.constants.AccountsConstants;
+import com.learnms.accounts.dto.AccountsContactInfoDto;
 import com.learnms.accounts.dto.CustomerDto;
 import com.learnms.accounts.dto.ErrorResponseDto;
 import com.learnms.accounts.dto.ResponseDto;
@@ -48,6 +49,9 @@ public class AccountsController {
     // 2nd way of configuration management, via, environment interface
     @Autowired
     private Environment environment;
+
+    @Autowired
+    private AccountsContactInfoDto accountsContactInfoDto;
 
     @Operation( // this annotation by swagger is for writing extra info about this specific API here
             summary = "Create Account Details REST API",
@@ -230,6 +234,32 @@ public class AccountsController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(environment.getProperty("JAVA_HOME"));
+    }
+
+    @Operation(
+            summary = "Get Contact Info",
+            description = "Get Contact Info details that can be reached out in case of any issues"
+    )
+    @ApiResponses(
+            {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "HTTP Status OK"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "HTTP Status Internal Server Error",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponseDto.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping("/contact-info")
+    public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountsContactInfoDto);
     }
 
 }
