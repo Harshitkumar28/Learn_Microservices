@@ -1,0 +1,11 @@
+build:
+  version: "2.0"
+
+loans:
+  message: "Welcome to BloodBank accounts related to QA APIs"
+  contactDetails:
+    name: "Smith Ray - QA Lead"
+    email: "smith@bloodbank.com"
+  onCallSupport:
+    -(666)235-5326
+    -(666)353-3334
