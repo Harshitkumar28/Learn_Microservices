@@ -1,0 +1,39 @@
+# Anywhere this file can be created. It is just developer's will it is created here.
+
+services:
+  accounts:
+    image: "harshdocker8340/accounts:s4"
+    container_name: accounts-ms
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 999m
+    networks:
+      - bloodbank
+  loans:
+    image: "harshdocker8340/loans:s4"
+    container_name: loans-ms
+    ports:
+      - "8090:8090"
+    deploy:
+      resources:
+        limits:
+          memory: 700mb
+    networks:
+      - bloodbank
+  cards:
+    image: "harshdocker8340/cards:s4"
+    container_name: cards-ms
+    ports:
+      - "9000:9000"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - bloodbank
+networks:
+  bloodbank:
+    driver: "bridge"

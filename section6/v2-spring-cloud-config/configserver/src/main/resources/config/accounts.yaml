@@ -1,0 +1,11 @@
+build:
+  version: "3.0"
+
+accounts:
+  message: "Welcome to BloodBank accounts related local APIs"
+  contactDetails:
+    name: "Harshit Kumar - Developer"
+    email: "harshit@bloodbank.com"
+  onCallSupport:
+    -(555)555-2234
+    -(555)453-1243

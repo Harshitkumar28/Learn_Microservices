@@ -1,0 +1,20 @@
+package com.learnms.accounts.audit;
+
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+
+@Component("auditAwareImpl")
+public class AuditAwareImpl implements AuditorAware<String> { // it is for tracking who is doing changes in the data
+
+    /**
+     * Returns the current auditor of the application
+     * @return the current auditor
+     */
+    @Override
+    public Optional<String> getCurrentAuditor() {
+        return Optional.of("ACCOUNTS_MS");
+    }
+
+}
