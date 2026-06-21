@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: "configserver"
+  profiles:
+#    active: native
+    active: git # for fetching from git
+  cloud:
+    config:
+      server:
+#        native:
+#          search-locations: "classpath:/config"
+#          search-locations: "file:///C://Users//its me Harshit//Documents//Udemy//config"
+        git:
+          uri: "https://github.com/Harshitkumar28/harshit-config-main.git"
+          default-label: main  # from which branch of github, it should fetch
+          timeout: 5           # try to connect for 5 sec, if not, stop
+          clone-on-start: true # clone from github on starting of config server rather than on first request
+          force-pull: true     # forcefully override all local changes on starting / restarting config server
+
+management:
+  endpoints:
+    web:
+      exposure:
+        includes: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+encrypt:
+  key: "03850923JF03FJIOFE923R02J230RI320DK320R032K320DK-03DK-3KD"
+server:
+  port: 8071
